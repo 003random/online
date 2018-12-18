@@ -1,0 +1,6 @@
+prod.nwb.swisscom.ch:10001
+poc-server.com:80
+prod.nwb.swisscom.ch:10000
+poc-server.com:443
+prod.nwb.swisscom.ch:80
+prod.nwb.swisscom.ch:443
