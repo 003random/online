@@ -1,15 +1,17 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"net/http"
 	"bufio"
-	"time"
 	"crypto/tls"
+	"fmt"
+	"net/http"
+	"os"
+	"sync"
+	"time"
 )
 
 func main() {
+	var wait sync.WaitGroup
 	var urls []string
 
 	stat, err := os.Stdin.Stat()
@@ -29,15 +31,22 @@ func main() {
 		}
 	}
 
+	wait.Add(len(urls))
+
 	for _, url := range urls {
-		http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-		timeout := time.Duration(1 * time.Second)
-		client := http.Client{
-			Timeout: timeout,
-		}
-		_, err := client.Get(url)
-		if err == nil {
-    			fmt.Println(url)
-		}
+		go getHost(url, &wait)
 	}
+	wait.Wait()
+}
+func getHost(url string, wait *sync.WaitGroup) {
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	timeout := time.Duration(2 * time.Second)
+	client := http.Client{
+		Timeout: timeout,
+	}
+	_, err := client.Get(url)
+	if err == nil {
+		fmt.Println(url)
+	}
+	wait.Done()
 }
