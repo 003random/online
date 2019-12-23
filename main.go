@@ -40,7 +40,7 @@ func main() {
 }
 func getHost(url string, wait *sync.WaitGroup) {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-	timeout := time.Duration(2 * time.Second)
+	timeout := time.Duration(5 * time.Second)
 	client := http.Client{
 		Timeout: timeout,
 	}
